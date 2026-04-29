@@ -1,0 +1,19 @@
+{
+  "name": "qaitest-shortest",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "qa:run": "node qa/runner.js",
+    "qa:plan": "node qa/plan.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "dotenv": "^16.6.1"
+  },
+  "dependencies": {
+    "openai": "^6.35.0"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "id": "guestbook-happy",
+  "title": "Guestbook happy path",
+  "objective": "Pastikan user bisa submit guestbook lalu melihat hasilnya di entries",
+  "provider_hint": "openai",
+  "base_url": "http://qaitest.test/",
+  "priority": "normal",
+  "preconditions": [
+    "App bisa diakses di base_url",
+    "Storage aktif"
+  ],
+  "input_data": {
+    "name": "QA Tester",
+    "message": "Halo dari plan QA"
+  },
+  "steps": [
+    {
+      "id": "step-1",
+      "type": "navigate",
+      "url": "/",
+      "description": "Buka homepage"
+    },
+    {
+      "id": "step-2",
+      "type": "fill",
+      "target": "Nama pengunjung",
+      "value_ref": "input_data.name",
+      "description": "Isi nama"
+    },
+    {
+      "id": "step-3",
+      "type": "fill",
+      "target": "Pesan",
+      "value_ref": "input_data.message",
+      "description": "Isi pesan"
+    },
+    {
+      "id": "step-4",
+      "type": "click",
+      "target": "Simpan ke guestbook",
+      "description": "Submit form"
+    },
+    {
+      "id": "step-5",
+      "type": "assert_visible",
+      "target": "[data-testid=\"saved-notice\"]",
+      "description": "Pastikan notifikasi sukses muncul"
+    },
+    {
+      "id": "step-6",
+      "type": "navigate",
+      "url": "/entries.php",
+      "description": "Buka halaman entries"
+    },
+    {
+      "id": "step-7",
+      "type": "assert_text",
+      "target": "[data-testid=\"entries-list\"]",
+      "contains_ref": "input_data.message",
+      "description": "Pastikan pesan tersimpan muncul"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert-1",
+      "type": "url_contains",
+      "value": "entries.php"
+    },
+    {
+      "id": "assert-2",
+      "type": "text_contains",
+      "target": "[data-testid=\"entries-list\"]",
+      "value_ref": "input_data.message"
+    }
+  ],
+  "cleanup": [
+    {
+      "type": "delete_created_entries",
+      "strategy": "by_text_match"
+    }
+  ],
+  "reporting": {
+    "log_level": "technical",
+    "include_screenshots": true,
+    "include_trace": true,
+    "include_dom_snapshot": true
+  },
+  "ai_summary": {
+    "tone": "plain",
+    "include_root_cause": true,
+    "include_suggestions": true
+  }
+}
