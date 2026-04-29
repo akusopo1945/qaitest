@@ -8,6 +8,8 @@ test("qa dashboard renders the planning gui", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Generate plan" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Generate & run" })).toBeVisible();
   await expect(page.getByTestId("openai-status")).toBeVisible();
+  await expect(page.getByTestId("ai-api-list")).toContainText("OpenAI API");
+  await expect(page.getByTestId("ai-api-list")).toContainText("Amazon Web Services Bedrock API");
 });
 
 test("qa demo run stays interactive and always ends in success", async ({ page }) => {

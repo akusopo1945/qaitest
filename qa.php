@@ -67,6 +67,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $defaultBaseUrl, $notice, $error, $generatedPlan, $generatedPlanPath, $generatedResult, $generatedResultPath, $submittedPrompt, $submittedBaseUrl, $submittedModel, $lastAction, $lastCommand): void {
     $openaiReady = qa_has_openai_key();
+    $aiApis = [
+        'OpenAI API',
+        'Xiaomi MiMo API',
+        'Anthropic Claude API',
+        'Google Gemini API',
+        'Mistral AI API',
+        'DeepSeek API',
+        'xAI Grok API',
+        'Groq API',
+        'Microsoft Azure OpenAI API',
+        'Amazon Web Services Bedrock API',
+    ];
     ?>
     <div class="eyebrow">
         <span class="dot" aria-hidden="true"></span>
@@ -145,6 +157,23 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
         <div class="panel">
             <div class="label">OpenAI status</div>
             <div class="value" data-testid="openai-status"><?php echo $openaiReady ? 'Configured' : 'Not configured yet'; ?></div>
+        </div>
+    </div>
+
+    <div class="panel stack">
+        <div class="section-head">
+            <div>
+                <div class="label">Supported AI APIs</div>
+                <div class="muted">Daftar provider yang bisa ditampilkan sebagai opsi model atau integrasi.</div>
+            </div>
+        </div>
+
+        <div class="list" data-testid="ai-api-list">
+            <?php foreach ($aiApis as $api): ?>
+                <div class="entry">
+                    <div class="entry-name"><?php echo h($api); ?></div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
