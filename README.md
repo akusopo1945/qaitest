@@ -1,210 +1,180 @@
 # Qaitest
 
-Qaitest ini intinya local PHP playground yang bisa kamu buka di browser lewat domain lokal `http://qaitest.test/`.
+Qaitest is a lightweight PHP playground for a guestbook, demo pages, and a Playwright-based QA workflow.
 
-Kalau mau ngomong simpel:
+## Overview
 
-- ini bukan app gede yang ribet
-- ini bukan framework berat
-- ini PHP native, Nginx, PHP-FPM, dan Playwright buat test
-- cocok buat ngecek flow lokal, eksperimen, atau jadi base project kecil yang rapi
+The project uses:
 
-Footer resmi project ini:
+- native PHP
+- Nginx
+- PHP-FPM
+- Playwright for automated tests
 
-```text
-dev with ❤️by akuncilik7
-```
+The goal is simple:
 
-## Isi Project
+- provide a clean landing page
+- keep a few small demo pages around
+- offer a compact guestbook with CRUD
+- expose a QA dashboard for prompts, plans, and execution
+- stay easy to maintain as a small baseline project
 
-Sekarang project ini punya beberapa bagian:
+## What’s Included
 
-- homepage di `index.php`
-- halaman about di `about.php`
-- halaman entries di `entries.php`
-- halaman QA dashboard di `qa.php`
-- halaman edit di `edit.php`
-- helper PHP di `app/bootstrap.php`
-- template reusable di `app/layout.php`
-- storage helper di `app/storage.php`
-- schema MySQL referensi di `database/guestbook_schema.sql`
-- footer reusable di `partials/footer.php`
-- navigasi reusable di `partials/topbar.php`
-- test otomatis di folder `tests/`
-- config Playwright di `playwright.config.ts`
-- pedoman sistem di `project_context.md`
-- format plan QA netral di `qa_plan_format.md`
-- schema plan QA di `qa/qa_plan.schema.json`
-- runner plan QA di `qa/runner.js`
-- planner OpenAI di `qa/plan.js`
-- contoh plan QA di `qa/plans/guestbook-happy.json`
+Main project components:
 
-## Yang Bisa Dibuka Di Browser
+- homepage in `index.php`
+- about page in `about.php`
+- entries page in `entries.php`
+- QA dashboard in `qa.php`
+- edit page in `edit.php`
+- PHP helpers in `app/bootstrap.php`
+- reusable layout in `app/layout.php`
+- storage helper in `app/storage.php`
+- reference MySQL schema in `database/guestbook_schema.sql`
+- reusable footer in `partials/footer.php`
+- reusable top navigation in `partials/topbar.php`
+- automated tests in `tests/`
+- Playwright config in `playwright.config.ts`
+- system guidance in `project_context.md`
+- neutral QA plan format in `qa_plan_format.md`
+- QA plan schema in `qa/qa_plan.schema.json`
+- QA runner in `qa/runner.js`
+- OpenAI planner in `qa/plan.js`
+- sample QA plan in `qa/plans/guestbook-happy.json`
 
-1. Home
+## Pages
 
-```text
-http://qaitest.test/
-```
+### Home
 
-Halaman ini nampilin:
+This page shows:
 
-- judul utama dengan hero yang lebih serius
-- status chip
-- demo flow hardcode yang nunjukin alur AI planning
-- form guestbook kecil buat isi nama
-- greeting personal
+- a stronger hero title
+- a status chip
+- a hardcoded demo flow for AI planning
+- a small guestbook form for name input
+- a personal greeting
 - server name
 - request URI
 - recent entries
-- footer credit
 
-2. About
+### About
 
-```text
-http://qaitest.test/about.php
-```
+This page gives a short, plain overview of the project.
 
-Halaman ini dipakai buat ngejelasin project secara singkat dan tetap punya footer credit yang sama.
+### Entries
 
-3. Entries
+This page lists everything saved through the guestbook homepage.
 
-```text
-http://qaitest.test/entries.php
-```
+Available features:
 
-Halaman ini nunjukin semua data yang kamu simpan lewat guestbook homepage.
+- search by name or message
+- sort by newest, oldest, name A-Z, or name Z-A
+- date range filtering with `from` and `to`
+- pagination when the list grows
+- edit and delete actions
 
-Di halaman ini juga ada:
+### Edit
 
-- search nama/pesan
-- sorting data by newest, oldest, name A-Z, atau name Z-A
-- filter rentang tanggal pakai `from` dan `to`
-- pagination kalau data mulai banyak
-- aksi edit dan delete
+This page updates an entry that has already been saved.
 
-4. Edit
+### QA Dashboard
 
-```text
-http://qaitest.test/edit.php?id=<entry-id>
-```
+This page is used to:
 
-Halaman ini dipakai buat update entry yang sudah disimpan.
+- write test prompts in plain language
+- generate a structured plan with OpenAI
+- run that plan through Playwright
+- inspect technical output and execution results
 
-5. QA Dashboard
+## Getting Started
 
-```text
-http://qaitest.test/qa.php
-```
-
-Halaman ini dipakai buat:
-
-- nulis prompt test pakai bahasa manusia
-- generate plan terstruktur dari OpenAI
-- menjalankan plan itu lewat Playwright
-- melihat output teknis dan hasil eksekusi
-
-## Cara Jalanin
-
-### 1. Install dependency
+### 1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-### 2. Pastikan host lokal siap
+### 2. Set the base URL
 
-Default base URL project ini:
+Default base URL:
 
 ```bash
 http://qaitest.test/
 ```
 
-Kalau kamu pakai WSL:
-- pastikan domain itu resolve dari WSL
-- kalau belum, cek `/etc/hosts`
+Adjust host mapping or the base URL to match your environment if needed.
 
-Kalau kamu pakai Windows:
-- pastikan `C:\Windows\System32\drivers\etc\hosts` sudah ada mapping ke host yang benar
-
-### 3. Buka di browser
+### 3. Open it in a browser
 
 ```text
 http://qaitest.test/
 ```
 
-Kalau berhasil, kamu bakal lihat landing page Qaitest yang sekarang lebih proper, bukan output PHP mentah lagi.
+If everything is set up correctly, the Qaitest landing page should load normally.
 
 ## Testing
 
-Project ini sekarang ada di dua lapis:
+The project has two main layers:
 
-- layer app: PHP native local playground
-- layer QA: Playwright sebagai executor deterministik
+- app layer: native PHP playground
+- QA layer: Playwright as the deterministic executor
 
-Nanti, kalau mesin QA AI mulai dipasang, alurnya pakai:
+QA flow:
 
-1. prompt natural language
-2. plan terstruktur
-3. eksekusi Playwright
+1. natural language prompt
+2. structured plan
+3. Playwright execution
 4. technical output
 5. AI summary
 
-Project ini masih belum jadi engine QA AI penuh, tapi fondasi arah itu sudah disiapkan.
-
-Kalau kamu mau eksekusi plan QA manual, pakai:
+Run a QA plan manually:
 
 ```bash
 pnpm qa:run qa/plans/guestbook-happy.json
 ```
 
-Hasil teknis akan ditulis ke `qa-output/<plan-id>.result.json`.
+Technical results are written to `qa-output/<plan-id>.result.json`.
 
-Kalau kamu mau bikin plan dari prompt natural language:
-
-```bash
-pnpm qa:plan --prompt "cek user bisa submit guestbook lalu entry muncul di halaman entries"
-```
-
-Kalau mau simpan hasilnya ke file:
+Generate a plan from a natural language prompt:
 
 ```bash
-pnpm qa:plan --prompt "cek guestbook happy path" --output qa/plans/generated.json
+pnpm qa:plan --prompt "check that a user can submit the guestbook and the entry appears on the entries page"
 ```
 
-Project ini juga sudah punya smoke test pakai Playwright.
+Save the generated plan to a file:
 
-Jalankan:
+```bash
+pnpm qa:plan --prompt "check guestbook happy path" --output qa/plans/generated.json
+```
+
+Run the Playwright smoke tests:
 
 ```bash
 pnpm test
 ```
 
-Test yang dicek sekarang:
+Current checks include:
 
-- homepage menampilkan status sukses
-- homepage menampilkan server name
-- greeting personal muncul saat query `name` dikirim
-- guestbook entry bisa disimpan
-- entry bisa diedit dan dihapus
-- entries page bisa search dan pagination
-- entries page bisa sorting dan filter tanggal
-- entries page bisa menampilkan data
-- QA dashboard page menampilkan form planning
-- halaman about menampilkan footer credit
-
-Kalau kamu jalanin test dari WSL:
-- browser Playwright harus terpasang di WSL
-- dependency sistem browser juga harus tersedia
+- homepage shows success status
+- homepage shows server name
+- personal greeting appears when `name` is passed in the query string
+- guestbook entry can be saved
+- entry can be edited and deleted
+- entries page supports search and pagination
+- entries page supports sorting and date filtering
+- entries page renders data correctly
+- QA dashboard page renders the planning form
+- about page shows a concise project summary
 
 ## Environment
 
-File env yang dipakai:
+Environment files:
 
 - `.env.local`
 - `.env`
 
-Setting yang penting:
+Important settings:
 
 ```bash
 PLAYWRIGHT_BASE_URL=http://qaitest.test/
@@ -212,11 +182,11 @@ OPENAI_API_KEY=your_openai_api_key
 OPENAI_MODEL=gpt-5.5
 ```
 
-Kalau kamu mau pakai URL lain, tinggal override lewat `.env.local`.
+Use `.env.local` to override the URL or other values.
 
-Kalau ingin biaya lebih ringan saat generate plan, kamu bisa override `OPENAI_MODEL` ke model yang lebih kecil seperti `gpt-5.4-mini`.
+If you want lower cost plan generation, switch `OPENAI_MODEL` to a smaller model such as `gpt-5.4-mini`.
 
-Kalau mau pakai MySQL:
+MySQL mode:
 
 ```bash
 GUESTBOOK_STORAGE=mysql
@@ -227,68 +197,60 @@ GUESTBOOK_DB_USER=akusopo
 GUESTBOOK_DB_PASSWORD=...
 ```
 
-Mode ini aktif otomatis kalau `.env.local` sudah diisi.
+This mode activates automatically once `.env.local` is set up.
 
-Schema MySQL yang dipakai sekarang juga sudah dirapikan:
+Current MySQL schema details:
 
-- `created_at` pakai `DATETIME(3)`
-- ada `updated_at`
-- ada index untuk `created_at`, `name + created_at`, dan `updated_at`
-- ada referensi SQL manual di `database/guestbook_schema.sql`
+- `created_at` uses `DATETIME(3)`
+- `updated_at` is included
+- indexes exist for `created_at`, `name + created_at`, and `updated_at`
+- a manual SQL reference lives in `database/guestbook_schema.sql`
 
-## Struktur File
+## File Structure
 
-Struktur utama yang perlu kamu tahu:
+Key files:
 
-- `index.php` untuk homepage
-- `about.php` untuk halaman about
-- `entries.php` untuk list data
-- `edit.php` untuk update data
-- `app/bootstrap.php` untuk helper umum
-- `app/layout.php` untuk template reusable
-- `app/storage.php` untuk simpan/baca guestbook
-- `partials/footer.php` untuk footer credit
-- `partials/topbar.php` untuk navigasi
-- `tests/*.spec.ts` untuk Playwright
-- `playwright.config.ts` untuk konfigurasi test
-- `project_context.md` untuk pedoman sistem
+- `index.php` for the homepage
+- `about.php` for the about page
+- `entries.php` for the data list
+- `edit.php` for updates
+- `app/bootstrap.php` for shared helpers
+- `app/layout.php` for the reusable template
+- `app/storage.php` for guestbook read/write logic
+- `partials/footer.php` for the reusable footer
+- `partials/topbar.php` for navigation
+- `tests/*.spec.ts` for Playwright
+- `playwright.config.ts` for test configuration
+- `project_context.md` for system guidance
 
-## Konvensi Yang Dipakai
+## Conventions
 
-Ini beberapa aturan main yang dipakai di project ini:
+Project rules:
 
-- pakai PHP native biar sederhana
-- escape semua output yang datang dari user
-- jangan render HTML mentah dari input
-- kalau bikin halaman baru, usahakan reusable
-- kalau nambah fitur baru, tambah test sekalian
-- kalau data mulai tumbuh, MySQL sudah disiapkan sebagai jalur berikutnya
+- keep it native PHP and simple
+- escape every user-controlled output
+- never render raw HTML from input
+- prefer reusable pieces when adding pages
+- add tests when adding features
+- keep MySQL ready as the next path when data grows
 
-## Flow Pengembangan Yang Disarankan
+## Recommended Flow
 
-Kalau mau lanjut develop, urutan paling enak biasanya:
+A clean workflow usually looks like this:
 
-1. definisikan intent test dalam natural language
-2. ubah intent itu jadi plan terstruktur
-3. jalankan plan lewat Playwright
-4. simpan output teknis yang eksplisit
-5. baru bikin AI summary di akhir
-6. setelah itu, kalau perlu, tambah fitur aplikasi atau coverage test
+1. define the test intent in natural language
+2. turn that intent into a structured plan
+3. run the plan through Playwright
+4. capture explicit technical output
+5. write the AI summary at the end
+6. add app features or more coverage if needed
 
-Jangan langsung bikin arsitektur terlalu berat kalau belum ada kebutuhan nyata. Project ini enaknya dijaga tetap kecil, jelas, dan gampang di-maintain.
+Avoid overbuilding the architecture before there is a real need. This project works best when it stays small, clear, and easy to maintain.
 
-## Catatan Buat WSL / Windows
+## Next Steps
 
-Karena project ini dipakai di WSL tapi juga diakses dari browser Windows:
+If you want to keep going, these are the most natural next moves:
 
-- browser Windows baca host dari Windows `hosts`
-- Playwright di WSL baca host dari lingkungan WSL
-- kalau hasil browser dan hasil test beda, biasanya masalahnya ada di DNS/hosts/cache, bukan di PHP-nya
-
-## Next Step Yang Cocok
-
-Kalau kamu mau lanjut, arah yang paling masuk akal:
-
-1. tambah filter lanjutan di entries
-2. tambah auth sederhana kalau butuh area private
-3. tambah CI biar `pnpm test` jalan otomatis
+1. add more advanced filters on entries
+2. add simple auth if a private area is needed
+3. add CI so `pnpm test` runs automatically
