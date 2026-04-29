@@ -1,6 +1,8 @@
 # Qaitest
 
-![Qaitest banner](./assets/banner.jpg)
+<p align="center">
+  <img src="./assets/banner.jpg" alt="Qaitest banner" width="1200">
+</p>
 
 Qaitest is a lightweight PHP playground for a guestbook, demo pages, and a Playwright-based QA workflow.
 
