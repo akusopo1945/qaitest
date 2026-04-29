@@ -580,6 +580,61 @@ function render_layout(string $title, string $activePage, callable $content, arr
             color: #f8fbff;
         }
 
+        .demo-progress {
+            height: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(148, 163, 184, 0.14);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+        }
+
+        .demo-progress-bar {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #38bdf8, #22c55e);
+            transition: width 0.35s ease;
+        }
+
+        .demo-status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .demo-status-card {
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            background: rgba(2, 6, 23, 0.28);
+            opacity: 0.55;
+            transition: 0.2s ease;
+        }
+
+        .demo-status-card .value {
+            margin-top: 6px;
+            color: var(--muted);
+        }
+
+        .demo-status-card[data-state="active"] {
+            opacity: 1;
+            border-color: rgba(56, 189, 248, 0.32);
+            background: rgba(56, 189, 248, 0.10);
+        }
+
+        .demo-status-card[data-state="done"] {
+            opacity: 1;
+            border-color: rgba(34, 197, 94, 0.30);
+            background: rgba(34, 197, 94, 0.10);
+        }
+
+        .card-lite {
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            background: rgba(2, 6, 23, 0.30);
+        }
+
         .button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -613,6 +668,10 @@ function render_layout(string $title, string $activePage, callable $content, arr
             }
 
             .timeline {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-status-grid {
                 grid-template-columns: 1fr;
             }
         }

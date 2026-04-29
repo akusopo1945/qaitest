@@ -76,8 +76,58 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
     <h1>QA Dashboard</h1>
 
     <p class="lede">
-        Tulis test pakai bahasa manusia, lalu dashboard ini ubah jadi plan JSON, eksekusi via Playwright, dan tampilkan hasil teknis yang bisa diaudit.
+        Ada dua mode di halaman ini. Satu mode simulasi interaktif tanpa AI, satu lagi mode QA asli untuk generate plan dan run lewat Playwright.
     </p>
+
+    <div class="panel stack" data-testid="qa-demo-run">
+        <div class="section-head">
+            <div>
+                <div class="label">Interactive demo run</div>
+                <div class="muted">Masukkan prompt apa pun. Demo ini tetap berakhir sukses dan menampilkan summary.</div>
+            </div>
+            <div class="tag" data-testid="qa-demo-status">Idle</div>
+        </div>
+
+        <form class="form" id="qa-demo-form">
+            <div class="field">
+                <label class="label" for="qa-demo-prompt">Demo prompt</label>
+                <textarea class="textarea" id="qa-demo-prompt" name="prompt" data-testid="qa-demo-prompt" placeholder="Tulis prompt apa saja di sini">cek login, submit form, dan lihat summary</textarea>
+            </div>
+
+            <div class="button-row">
+                <button class="button primary" type="submit" data-testid="qa-demo-run-button">Run demo</button>
+                <button class="button secondary" type="button" data-testid="qa-demo-reset-button">Reset</button>
+            </div>
+        </form>
+
+        <div class="demo-progress">
+            <div class="demo-progress-bar" data-testid="qa-demo-progress-bar"></div>
+        </div>
+
+        <div class="demo-status-grid">
+            <div class="demo-status-card" data-stage="loading" data-testid="qa-demo-stage-loading">
+                <div class="label">Loading</div>
+                <div class="value">Menyiapkan simulasi.</div>
+            </div>
+            <div class="demo-status-card" data-stage="flow" data-testid="qa-demo-stage-flow">
+                <div class="label">Process flow</div>
+                <div class="value">Menjalankan langkah demo satu per satu.</div>
+            </div>
+            <div class="demo-status-card" data-stage="validation" data-testid="qa-demo-stage-validation">
+                <div class="label">Validation</div>
+                <div class="value">Semua validasi dibuat lulus.</div>
+            </div>
+            <div class="demo-status-card" data-stage="summary" data-testid="qa-demo-stage-summary">
+                <div class="label">Summary</div>
+                <div class="value">Ringkasan hasil demo akan tampil di sini.</div>
+            </div>
+        </div>
+
+        <div class="demo-summary card-lite" data-testid="qa-demo-summary">
+            <div class="label">Demo summary</div>
+            <div class="value" data-testid="qa-demo-summary-text">Belum ada run.</div>
+        </div>
+    </div>
 
     <div class="grid qa-stats">
         <div class="panel">
@@ -255,6 +305,100 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
             </div>
         </div>
     <?php endif; ?>
+    <script>
+        (() => {
+            const form = document.getElementById('qa-demo-form');
+            const promptInput = document.getElementById('qa-demo-prompt');
+            const status = document.querySelector('[data-testid="qa-demo-status"]');
+            const runButton = document.querySelector('[data-testid="qa-demo-run-button"]');
+            const resetButton = document.querySelector('[data-testid="qa-demo-reset-button"]');
+            const progressBar = document.querySelector('[data-testid="qa-demo-progress-bar"]');
+            const summaryText = document.querySelector('[data-testid="qa-demo-summary-text"]');
+            const stageMap = {
+                loading: document.querySelector('[data-testid="qa-demo-stage-loading"]'),
+                flow: document.querySelector('[data-testid="qa-demo-stage-flow"]'),
+                validation: document.querySelector('[data-testid="qa-demo-stage-validation"]'),
+                summary: document.querySelector('[data-testid="qa-demo-stage-summary"]'),
+            };
+
+            if (!form || !promptInput || !status || !runButton || !resetButton || !progressBar || !summaryText) {
+                return;
+            }
+
+            const stages = [
+                { key: 'loading', label: 'Loading', progress: 20, delay: 700 },
+                { key: 'flow', label: 'Process flow', progress: 55, delay: 900 },
+                { key: 'validation', label: 'Validation', progress: 80, delay: 900 },
+                { key: 'summary', label: 'Summary', progress: 100, delay: 650 },
+            ];
+
+            let timers = [];
+
+            const clearTimers = () => {
+                timers.forEach((timer) => window.clearTimeout(timer));
+                timers = [];
+            };
+
+            const setStage = (activeStage) => {
+                Object.entries(stageMap).forEach(([key, element]) => {
+                    if (!element) {
+                        return;
+                    }
+
+                    element.dataset.state = key === activeStage ? 'active' : key === 'summary' && activeStage === 'summary' ? 'done' : 'idle';
+                });
+            };
+
+            const resetDemo = () => {
+                clearTimers();
+                status.textContent = 'Idle';
+                summaryText.textContent = 'Belum ada run.';
+                progressBar.style.width = '0%';
+                runButton.disabled = false;
+                runButton.textContent = 'Run demo';
+                setStage('');
+            };
+
+            const runDemo = () => {
+                clearTimers();
+
+                const promptValue = promptInput.value.trim() || 'Prompt kosong';
+                const stepSummary = `Prompt "${promptValue}" diproses, semua tahap simulasi lulus, dan summary berhasil dibuat.`;
+
+                runButton.disabled = true;
+                runButton.textContent = 'Running...';
+                status.textContent = 'Loading';
+                summaryText.textContent = 'Menjalankan simulasi...';
+                progressBar.style.width = '0%';
+                setStage('loading');
+
+                stages.forEach((stage, index) => {
+                    const timer = window.setTimeout(() => {
+                        status.textContent = stage.label;
+                        progressBar.style.width = `${stage.progress}%`;
+                        setStage(stage.key);
+
+                        if (stage.key === 'summary') {
+                            summaryText.textContent = stepSummary;
+                            status.textContent = 'Success';
+                            runButton.disabled = false;
+                            runButton.textContent = 'Run demo';
+                        }
+                    }, stages.slice(0, index).reduce((total, item) => total + item.delay, 0) + stage.delay);
+
+                    timers.push(timer);
+                });
+            };
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                runDemo();
+            });
+
+            resetButton.addEventListener('click', resetDemo);
+            resetDemo();
+        })();
+    </script>
     <?php
 }, [
     'bodyClass' => 'page-qa',
