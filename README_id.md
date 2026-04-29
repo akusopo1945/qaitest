@@ -1,5 +1,7 @@
 # Qaitest
 
+![Banner Qaitest](./assets/banner.jpg)
+
 Qaitest adalah PHP playground ringan untuk guestbook, halaman demo, dan workflow QA berbasis Playwright.
 
 ## Gambaran

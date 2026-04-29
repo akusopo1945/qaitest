@@ -1,5 +1,7 @@
 # Qaitest
 
+![Qaitest banner](./assets/banner.jpg)
+
 Qaitest is a lightweight PHP playground for a guestbook, demo pages, and a Playwright-based QA workflow.
 
 ## Overview

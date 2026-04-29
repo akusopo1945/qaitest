@@ -544,6 +544,15 @@ function render_layout(string $title, string $activePage, callable $content, arr
             gap: 14px;
         }
 
+        .demo-shell[data-provider-theme] {
+            --provider-accent-start: #38bdf8;
+            --provider-accent-end: #22c55e;
+            --provider-active-border: rgba(56, 189, 248, 0.32);
+            --provider-active-bg: rgba(56, 189, 248, 0.10);
+            --provider-done-border: rgba(34, 197, 94, 0.30);
+            --provider-done-bg: rgba(34, 197, 94, 0.10);
+        }
+
         .demo-title {
             display: flex;
             justify-content: space-between;
@@ -592,7 +601,7 @@ function render_layout(string $title, string $activePage, callable $content, arr
             width: 0%;
             height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg, #38bdf8, #22c55e);
+            background: linear-gradient(90deg, var(--provider-accent-start), var(--provider-accent-end));
             transition: width 0.35s ease;
         }
 
@@ -618,14 +627,14 @@ function render_layout(string $title, string $activePage, callable $content, arr
 
         .demo-status-card[data-state="active"] {
             opacity: 1;
-            border-color: rgba(56, 189, 248, 0.32);
-            background: rgba(56, 189, 248, 0.10);
+            border-color: var(--provider-active-border);
+            background: var(--provider-active-bg);
         }
 
         .demo-status-card[data-state="done"] {
             opacity: 1;
-            border-color: rgba(34, 197, 94, 0.30);
-            background: rgba(34, 197, 94, 0.10);
+            border-color: var(--provider-done-border);
+            background: var(--provider-done-bg);
         }
 
         .card-lite {

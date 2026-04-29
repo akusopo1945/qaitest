@@ -32,6 +32,99 @@ $aiProviders = [
 ];
 $selectedProvider = trim((string)($_POST['provider'] ?? $aiProviders[0]));
 $selectedProvider = in_array($selectedProvider, $aiProviders, true) ? $selectedProvider : $aiProviders[0];
+$providerThemes = [
+    'OpenAI API' => [
+        'badge' => 'OpenAI tuned',
+        'accentStart' => '#38bdf8',
+        'accentEnd' => '#22c55e',
+        'activeBorder' => 'rgba(56, 189, 248, 0.32)',
+        'activeBg' => 'rgba(56, 189, 248, 0.10)',
+        'doneBorder' => 'rgba(34, 197, 94, 0.30)',
+        'doneBg' => 'rgba(34, 197, 94, 0.10)',
+    ],
+    'Xiaomi MiMo API' => [
+        'badge' => 'MiMo tuned',
+        'accentStart' => '#fb7185',
+        'accentEnd' => '#f97316',
+        'activeBorder' => 'rgba(251, 113, 133, 0.32)',
+        'activeBg' => 'rgba(251, 113, 133, 0.10)',
+        'doneBorder' => 'rgba(249, 115, 22, 0.30)',
+        'doneBg' => 'rgba(249, 115, 22, 0.10)',
+    ],
+    'Anthropic Claude API' => [
+        'badge' => 'Claude tuned',
+        'accentStart' => '#a855f7',
+        'accentEnd' => '#ec4899',
+        'activeBorder' => 'rgba(168, 85, 247, 0.32)',
+        'activeBg' => 'rgba(168, 85, 247, 0.10)',
+        'doneBorder' => 'rgba(236, 72, 153, 0.30)',
+        'doneBg' => 'rgba(236, 72, 153, 0.10)',
+    ],
+    'Google Gemini API' => [
+        'badge' => 'Gemini tuned',
+        'accentStart' => '#06b6d4',
+        'accentEnd' => '#10b981',
+        'activeBorder' => 'rgba(6, 182, 212, 0.32)',
+        'activeBg' => 'rgba(6, 182, 212, 0.10)',
+        'doneBorder' => 'rgba(16, 185, 129, 0.30)',
+        'doneBg' => 'rgba(16, 185, 129, 0.10)',
+    ],
+    'Mistral AI API' => [
+        'badge' => 'Mistral tuned',
+        'accentStart' => '#f59e0b',
+        'accentEnd' => '#fb7185',
+        'activeBorder' => 'rgba(245, 158, 11, 0.32)',
+        'activeBg' => 'rgba(245, 158, 11, 0.10)',
+        'doneBorder' => 'rgba(251, 113, 133, 0.30)',
+        'doneBg' => 'rgba(251, 113, 133, 0.10)',
+    ],
+    'DeepSeek API' => [
+        'badge' => 'DeepSeek tuned',
+        'accentStart' => '#14b8a6',
+        'accentEnd' => '#3b82f6',
+        'activeBorder' => 'rgba(20, 184, 166, 0.32)',
+        'activeBg' => 'rgba(20, 184, 166, 0.10)',
+        'doneBorder' => 'rgba(59, 130, 246, 0.30)',
+        'doneBg' => 'rgba(59, 130, 246, 0.10)',
+    ],
+    'xAI Grok API' => [
+        'badge' => 'Grok tuned',
+        'accentStart' => '#f43f5e',
+        'accentEnd' => '#f59e0b',
+        'activeBorder' => 'rgba(244, 63, 94, 0.32)',
+        'activeBg' => 'rgba(244, 63, 94, 0.10)',
+        'doneBorder' => 'rgba(245, 158, 11, 0.30)',
+        'doneBg' => 'rgba(245, 158, 11, 0.10)',
+    ],
+    'Groq API' => [
+        'badge' => 'Groq tuned',
+        'accentStart' => '#22c55e',
+        'accentEnd' => '#14b8a6',
+        'activeBorder' => 'rgba(34, 197, 94, 0.32)',
+        'activeBg' => 'rgba(34, 197, 94, 0.10)',
+        'doneBorder' => 'rgba(20, 184, 166, 0.30)',
+        'doneBg' => 'rgba(20, 184, 166, 0.10)',
+    ],
+    'Microsoft Azure OpenAI API' => [
+        'badge' => 'Azure tuned',
+        'accentStart' => '#2563eb',
+        'accentEnd' => '#0ea5e9',
+        'activeBorder' => 'rgba(37, 99, 235, 0.32)',
+        'activeBg' => 'rgba(37, 99, 235, 0.10)',
+        'doneBorder' => 'rgba(14, 165, 233, 0.30)',
+        'doneBg' => 'rgba(14, 165, 233, 0.10)',
+    ],
+    'Amazon Web Services Bedrock API' => [
+        'badge' => 'Bedrock tuned',
+        'accentStart' => '#f97316',
+        'accentEnd' => '#ea580c',
+        'activeBorder' => 'rgba(249, 115, 22, 0.32)',
+        'activeBg' => 'rgba(249, 115, 22, 0.10)',
+        'doneBorder' => 'rgba(234, 88, 12, 0.30)',
+        'doneBg' => 'rgba(234, 88, 12, 0.10)',
+    ],
+];
+$selectedTheme = $providerThemes[$selectedProvider] ?? $providerThemes[$aiProviders[0]];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lastAction = (string)($_POST['action'] ?? '');
@@ -79,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $defaultBaseUrl, $notice, $error, $generatedPlan, $generatedPlanPath, $generatedResult, $generatedResultPath, $submittedPrompt, $submittedBaseUrl, $submittedModel, $selectedProvider, $aiProviders, $lastAction, $lastCommand): void {
+render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $defaultBaseUrl, $notice, $error, $generatedPlan, $generatedPlanPath, $generatedResult, $generatedResultPath, $submittedPrompt, $submittedBaseUrl, $submittedModel, $selectedProvider, $aiProviders, $providerThemes, $selectedTheme, $lastAction, $lastCommand): void {
     $openaiReady = qa_has_openai_key();
     ?>
     <div class="eyebrow">
@@ -93,12 +186,13 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
         Ada dua mode di halaman ini. Satu mode simulasi interaktif tanpa AI, satu lagi mode QA asli untuk generate plan dan run lewat Playwright.
     </p>
 
-    <div class="panel stack" data-testid="qa-demo-run">
+    <div class="panel stack demo-shell" data-provider-theme="<?php echo h($selectedProvider); ?>" data-testid="qa-demo-run" style="--provider-accent-start: <?php echo h($selectedTheme['accentStart']); ?>; --provider-accent-end: <?php echo h($selectedTheme['accentEnd']); ?>; --provider-active-border: <?php echo h($selectedTheme['activeBorder']); ?>; --provider-active-bg: <?php echo h($selectedTheme['activeBg']); ?>; --provider-done-border: <?php echo h($selectedTheme['doneBorder']); ?>; --provider-done-bg: <?php echo h($selectedTheme['doneBg']); ?>;">
         <div class="section-head">
             <div>
                 <div class="label">Interactive demo run</div>
                 <div class="muted">Masukkan prompt apa pun. Demo ini tetap berakhir sukses dan menampilkan summary.</div>
             </div>
+            <div class="tag" data-testid="qa-demo-provider-badge"><?php echo h($selectedTheme['badge']); ?></div>
             <div class="tag" data-testid="qa-demo-status">Idle</div>
         </div>
 
@@ -360,9 +454,11 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
             const summaryText = document.querySelector('[data-testid="qa-demo-summary-text"]');
             const providerSelect = document.querySelector('[data-testid="qa-provider"]');
             const providerLine = document.querySelector('[data-testid="qa-demo-provider-line"]');
+            const providerBadge = document.querySelector('[data-testid="qa-demo-provider-badge"]');
             const providerHint = document.querySelector('[data-testid="qa-provider-hint"]');
             const modelLabel = document.querySelector('[data-testid="qa-model-label"]');
             const modelInput = document.querySelector('[data-testid="qa-model-input"]');
+            const demoShell = document.querySelector('[data-testid="qa-demo-run"]');
             const stageMap = {
                 loading: document.querySelector('[data-testid="qa-demo-stage-loading"]'),
                 flow: document.querySelector('[data-testid="qa-demo-stage-flow"]'),
@@ -370,57 +466,67 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
                 summary: document.querySelector('[data-testid="qa-demo-stage-summary"]'),
             };
 
-            if (!form || !promptInput || !status || !runButton || !resetButton || !progressBar || !summaryText || !providerSelect || !providerLine || !providerHint || !modelLabel || !modelInput) {
+            if (!form || !promptInput || !status || !runButton || !resetButton || !progressBar || !summaryText || !providerSelect || !providerLine || !providerBadge || !providerHint || !modelLabel || !modelInput || !demoShell) {
                 return;
             }
 
             const providerConfig = {
                 'OpenAI API': {
+                    badge: 'OpenAI tuned',
                     hint: 'OpenAI API memakai model default untuk generate plan.',
                     label: 'Model / deployment',
                     placeholder: 'gpt-5.5',
                 },
                 'Xiaomi MiMo API': {
+                    badge: 'MiMo tuned',
                     hint: 'Xiaomi MiMo API biasanya memakai model atau deployment name spesifik.',
                     label: 'Model / deployment',
                     placeholder: 'mimo-v1',
                 },
                 'Anthropic Claude API': {
+                    badge: 'Claude tuned',
                     hint: 'Anthropic Claude API cocok untuk model keluarga Claude.',
                     label: 'Model / deployment',
                     placeholder: 'claude-3.5-sonnet',
                 },
                 'Google Gemini API': {
+                    badge: 'Gemini tuned',
                     hint: 'Google Gemini API bisa dipakai dengan model Gemini yang sesuai.',
                     label: 'Model / deployment',
                     placeholder: 'gemini-2.5-pro',
                 },
                 'Mistral AI API': {
+                    badge: 'Mistral tuned',
                     hint: 'Mistral AI API biasanya memakai nama model Mistral yang tersedia.',
                     label: 'Model / deployment',
                     placeholder: 'mistral-large-latest',
                 },
                 'DeepSeek API': {
+                    badge: 'DeepSeek tuned',
                     hint: 'DeepSeek API memakai model DeepSeek yang dipilih di environment ini.',
                     label: 'Model / deployment',
                     placeholder: 'deepseek-chat',
                 },
                 'xAI Grok API': {
+                    badge: 'Grok tuned',
                     hint: 'xAI Grok API memakai model Grok yang cocok untuk endpoint ini.',
                     label: 'Model / deployment',
                     placeholder: 'grok-3',
                 },
                 'Groq API': {
+                    badge: 'Groq tuned',
                     hint: 'Groq API sering dipakai untuk model cepat dengan deployment tertentu.',
                     label: 'Model / deployment',
                     placeholder: 'llama-3.3-70b-versatile',
                 },
                 'Microsoft Azure OpenAI API': {
+                    badge: 'Azure tuned',
                     hint: 'Azure OpenAI biasanya memakai deployment name, bukan model mentah.',
                     label: 'Deployment name',
                     placeholder: 'gpt-5.5-prod',
                 },
                 'Amazon Web Services Bedrock API': {
+                    badge: 'Bedrock tuned',
                     hint: 'Bedrock biasanya memakai model ID yang didukung provider.',
                     label: 'Model ID',
                     placeholder: 'anthropic.claude-3-5-sonnet-20240620-v1:0',
@@ -458,9 +564,11 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
                 status.textContent = 'Idle';
                 const providerState = getProviderConfig(providerSelect.value);
                 providerLine.textContent = `Provider: ${providerSelect.value}`;
+                providerBadge.textContent = providerState.badge;
                 providerHint.textContent = providerState.hint;
                 modelLabel.textContent = providerState.label;
                 modelInput.placeholder = providerState.placeholder;
+                demoShell.dataset.providerTheme = providerSelect.value;
                 summaryText.textContent = 'Belum ada run.';
                 progressBar.style.width = '0%';
                 runButton.disabled = false;
@@ -503,9 +611,11 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
             const syncProviderUi = () => {
                 const providerState = getProviderConfig(providerSelect.value);
                 providerLine.textContent = `Provider: ${providerSelect.value}`;
+                providerBadge.textContent = providerState.badge;
                 providerHint.textContent = providerState.hint;
                 modelLabel.textContent = providerState.label;
                 modelInput.placeholder = providerState.placeholder;
+                demoShell.dataset.providerTheme = providerSelect.value;
             };
 
             form.addEventListener('submit', (event) => {
