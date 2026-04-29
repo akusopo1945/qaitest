@@ -71,9 +71,9 @@ render_layout('Qaitest', 'home', function () use ($serverName, $requestUri, $vis
             </div>
 
             <p class="lede">
-                Qaitest adalah playground QA lokal yang bisa dibuka dari browser Windows lewat host
-                <strong>qaitest.test</strong>. Di sini ada guestbook kecil, dashboard QA, dan demo flow
-                hardcode yang nunjukin bagaimana mesin QA berbasis AI bakal jalan.
+                Qaitest adalah playground QA lokal yang bisa dibuka dari browser lewat host
+                <strong>qaitest.test</strong>. Di sini ada guestbook kecil, dashboard QA, dan preview
+                alur kerja AI yang disusun supaya mudah dipahami.
             </p>
 
             <div class="hero-actions">
@@ -103,8 +103,8 @@ render_layout('Qaitest', 'home', function () use ($serverName, $requestUri, $vis
                 <div class="demo-shell">
                     <div class="demo-title">
                         <div>
-                            <div class="label">Hardcoded demo run</div>
-                            <div class="muted">Seolah AI sudah bekerja dengan mulus.</div>
+                            <div class="label">Sample QA run</div>
+                            <div class="muted">Preview ringkas alur kerja yang dijalankan dari prompt ke hasil.</div>
                         </div>
                         <span class="tag"><?php echo h($demoRun['status']); ?></span>
                     </div>

@@ -51,7 +51,7 @@ This page shows:
 
 - a stronger hero title
 - a status chip
-- a hardcoded demo flow for AI planning
+- a concise demo flow for AI planning
 - a small guestbook form for name input
 - a personal greeting
 - server name

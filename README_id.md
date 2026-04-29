@@ -51,7 +51,7 @@ Halaman ini menampilkan:
 
 - judul utama dengan hero yang lebih serius
 - status chip
-- demo flow hardcode yang menunjukkan alur AI planning
+- demo flow ringkas yang menunjukkan alur AI planning
 - form guestbook kecil untuk isi nama
 - greeting personal
 - server name
