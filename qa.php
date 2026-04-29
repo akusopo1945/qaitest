@@ -18,6 +18,20 @@ $submittedPrompt = trim((string)($_POST['prompt'] ?? $defaultPrompt));
 $submittedBaseUrl = trim((string)($_POST['base_url'] ?? $defaultBaseUrl));
 $submittedBaseUrl = $submittedBaseUrl !== '' ? $submittedBaseUrl : $defaultBaseUrl;
 $submittedModel = trim((string)($_POST['model'] ?? env_value('OPENAI_MODEL', 'gpt-5.5')));
+$aiProviders = [
+    'OpenAI API',
+    'Xiaomi MiMo API',
+    'Anthropic Claude API',
+    'Google Gemini API',
+    'Mistral AI API',
+    'DeepSeek API',
+    'xAI Grok API',
+    'Groq API',
+    'Microsoft Azure OpenAI API',
+    'Amazon Web Services Bedrock API',
+];
+$selectedProvider = trim((string)($_POST['provider'] ?? $aiProviders[0]));
+$selectedProvider = in_array($selectedProvider, $aiProviders, true) ? $selectedProvider : $aiProviders[0];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lastAction = (string)($_POST['action'] ?? '');
@@ -65,20 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $defaultBaseUrl, $notice, $error, $generatedPlan, $generatedPlanPath, $generatedResult, $generatedResultPath, $submittedPrompt, $submittedBaseUrl, $submittedModel, $lastAction, $lastCommand): void {
+render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $defaultBaseUrl, $notice, $error, $generatedPlan, $generatedPlanPath, $generatedResult, $generatedResultPath, $submittedPrompt, $submittedBaseUrl, $submittedModel, $selectedProvider, $aiProviders, $lastAction, $lastCommand): void {
     $openaiReady = qa_has_openai_key();
-    $aiApis = [
-        'OpenAI API',
-        'Xiaomi MiMo API',
-        'Anthropic Claude API',
-        'Google Gemini API',
-        'Mistral AI API',
-        'DeepSeek API',
-        'xAI Grok API',
-        'Groq API',
-        'Microsoft Azure OpenAI API',
-        'Amazon Web Services Bedrock API',
-    ];
     ?>
     <div class="eyebrow">
         <span class="dot" aria-hidden="true"></span>
@@ -148,7 +150,7 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
         </div>
         <div class="panel">
             <div class="label">Provider</div>
-            <div class="value"><?php echo h($submittedModel); ?></div>
+            <div class="value"><?php echo h($selectedProvider); ?></div>
         </div>
         <div class="panel">
             <div class="label">Base URL</div>
@@ -169,7 +171,7 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
         </div>
 
         <div class="list" data-testid="ai-api-list">
-            <?php foreach ($aiApis as $api): ?>
+            <?php foreach ($aiProviders as $api): ?>
                 <div class="entry">
                     <div class="entry-name"><?php echo h($api); ?></div>
                 </div>
@@ -222,9 +224,20 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
                     </div>
 
                     <div class="field">
-                        <label class="label" for="model">OpenAI model</label>
-                        <input class="input" id="model" name="model" value="<?php echo h($submittedModel); ?>" placeholder="gpt-5.5">
+                        <label class="label" for="provider">AI provider</label>
+                        <select class="input" id="provider" name="provider" data-testid="qa-provider">
+                            <?php foreach ($aiProviders as $provider): ?>
+                                <option value="<?php echo h($provider); ?>" <?php echo $provider === $selectedProvider ? 'selected' : ''; ?>>
+                                    <?php echo h($provider); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="model">OpenAI model</label>
+                    <input class="input" id="model" name="model" value="<?php echo h($submittedModel); ?>" placeholder="gpt-5.5">
                 </div>
 
                 <div class="button-row">

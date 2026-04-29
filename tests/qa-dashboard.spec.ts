@@ -10,6 +10,8 @@ test("qa dashboard renders the planning gui", async ({ page }) => {
   await expect(page.getByTestId("openai-status")).toBeVisible();
   await expect(page.getByTestId("ai-api-list")).toContainText("OpenAI API");
   await expect(page.getByTestId("ai-api-list")).toContainText("Amazon Web Services Bedrock API");
+  await expect(page.getByTestId("qa-provider")).toBeVisible();
+  await expect(page.getByTestId("qa-provider")).toContainText("OpenAI API");
 });
 
 test("qa demo run stays interactive and always ends in success", async ({ page }) => {
