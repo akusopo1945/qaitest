@@ -139,6 +139,7 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
 
         <div class="demo-summary card-lite" data-testid="qa-demo-summary">
             <div class="label">Demo summary</div>
+            <div class="muted" data-testid="qa-demo-provider-line">Provider: <?php echo h($selectedProvider); ?></div>
             <div class="value" data-testid="qa-demo-summary-text">Belum ada run.</div>
         </div>
     </div>
@@ -232,12 +233,13 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="muted" data-testid="qa-provider-hint">OpenAI API memakai model default untuk generate plan.</div>
                     </div>
                 </div>
 
                 <div class="field">
-                    <label class="label" for="model">OpenAI model</label>
-                    <input class="input" id="model" name="model" value="<?php echo h($submittedModel); ?>" placeholder="gpt-5.5">
+                    <label class="label" for="model" data-testid="qa-model-label">Model / deployment</label>
+                    <input class="input" id="model" name="model" value="<?php echo h($submittedModel); ?>" placeholder="gpt-5.5" data-testid="qa-model-input">
                 </div>
 
                 <div class="button-row">
@@ -356,6 +358,11 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
             const resetButton = document.querySelector('[data-testid="qa-demo-reset-button"]');
             const progressBar = document.querySelector('[data-testid="qa-demo-progress-bar"]');
             const summaryText = document.querySelector('[data-testid="qa-demo-summary-text"]');
+            const providerSelect = document.querySelector('[data-testid="qa-provider"]');
+            const providerLine = document.querySelector('[data-testid="qa-demo-provider-line"]');
+            const providerHint = document.querySelector('[data-testid="qa-provider-hint"]');
+            const modelLabel = document.querySelector('[data-testid="qa-model-label"]');
+            const modelInput = document.querySelector('[data-testid="qa-model-input"]');
             const stageMap = {
                 loading: document.querySelector('[data-testid="qa-demo-stage-loading"]'),
                 flow: document.querySelector('[data-testid="qa-demo-stage-flow"]'),
@@ -363,9 +370,64 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
                 summary: document.querySelector('[data-testid="qa-demo-stage-summary"]'),
             };
 
-            if (!form || !promptInput || !status || !runButton || !resetButton || !progressBar || !summaryText) {
+            if (!form || !promptInput || !status || !runButton || !resetButton || !progressBar || !summaryText || !providerSelect || !providerLine || !providerHint || !modelLabel || !modelInput) {
                 return;
             }
+
+            const providerConfig = {
+                'OpenAI API': {
+                    hint: 'OpenAI API memakai model default untuk generate plan.',
+                    label: 'Model / deployment',
+                    placeholder: 'gpt-5.5',
+                },
+                'Xiaomi MiMo API': {
+                    hint: 'Xiaomi MiMo API biasanya memakai model atau deployment name spesifik.',
+                    label: 'Model / deployment',
+                    placeholder: 'mimo-v1',
+                },
+                'Anthropic Claude API': {
+                    hint: 'Anthropic Claude API cocok untuk model keluarga Claude.',
+                    label: 'Model / deployment',
+                    placeholder: 'claude-3.5-sonnet',
+                },
+                'Google Gemini API': {
+                    hint: 'Google Gemini API bisa dipakai dengan model Gemini yang sesuai.',
+                    label: 'Model / deployment',
+                    placeholder: 'gemini-2.5-pro',
+                },
+                'Mistral AI API': {
+                    hint: 'Mistral AI API biasanya memakai nama model Mistral yang tersedia.',
+                    label: 'Model / deployment',
+                    placeholder: 'mistral-large-latest',
+                },
+                'DeepSeek API': {
+                    hint: 'DeepSeek API memakai model DeepSeek yang dipilih di environment ini.',
+                    label: 'Model / deployment',
+                    placeholder: 'deepseek-chat',
+                },
+                'xAI Grok API': {
+                    hint: 'xAI Grok API memakai model Grok yang cocok untuk endpoint ini.',
+                    label: 'Model / deployment',
+                    placeholder: 'grok-3',
+                },
+                'Groq API': {
+                    hint: 'Groq API sering dipakai untuk model cepat dengan deployment tertentu.',
+                    label: 'Model / deployment',
+                    placeholder: 'llama-3.3-70b-versatile',
+                },
+                'Microsoft Azure OpenAI API': {
+                    hint: 'Azure OpenAI biasanya memakai deployment name, bukan model mentah.',
+                    label: 'Deployment name',
+                    placeholder: 'gpt-5.5-prod',
+                },
+                'Amazon Web Services Bedrock API': {
+                    hint: 'Bedrock biasanya memakai model ID yang didukung provider.',
+                    label: 'Model ID',
+                    placeholder: 'anthropic.claude-3-5-sonnet-20240620-v1:0',
+                },
+            };
+
+            const getProviderConfig = (provider) => providerConfig[provider] ?? providerConfig['OpenAI API'];
 
             const stages = [
                 { key: 'loading', label: 'Loading', progress: 20, delay: 700 },
@@ -394,6 +456,11 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
             const resetDemo = () => {
                 clearTimers();
                 status.textContent = 'Idle';
+                const providerState = getProviderConfig(providerSelect.value);
+                providerLine.textContent = `Provider: ${providerSelect.value}`;
+                providerHint.textContent = providerState.hint;
+                modelLabel.textContent = providerState.label;
+                modelInput.placeholder = providerState.placeholder;
                 summaryText.textContent = 'Belum ada run.';
                 progressBar.style.width = '0%';
                 runButton.disabled = false;
@@ -405,7 +472,8 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
                 clearTimers();
 
                 const promptValue = promptInput.value.trim() || 'Prompt kosong';
-                const stepSummary = `Prompt "${promptValue}" diproses, semua tahap simulasi lulus, dan summary berhasil dibuat.`;
+                const providerState = getProviderConfig(providerSelect.value);
+                const stepSummary = `Prompt "${promptValue}" diproses dengan ${providerSelect.value}, semua tahap simulasi lulus, dan summary berhasil dibuat.`;
 
                 runButton.disabled = true;
                 runButton.textContent = 'Running...';
@@ -432,11 +500,20 @@ render_layout('QA Dashboard - Qaitest', 'qa', function () use ($defaultPrompt, $
                 });
             };
 
+            const syncProviderUi = () => {
+                const providerState = getProviderConfig(providerSelect.value);
+                providerLine.textContent = `Provider: ${providerSelect.value}`;
+                providerHint.textContent = providerState.hint;
+                modelLabel.textContent = providerState.label;
+                modelInput.placeholder = providerState.placeholder;
+            };
+
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
                 runDemo();
             });
 
+            providerSelect.addEventListener('change', syncProviderUi);
             resetButton.addEventListener('click', resetDemo);
             resetDemo();
         })();
